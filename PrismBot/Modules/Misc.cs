@@ -35,5 +35,20 @@ namespace PrismBot.Modules
             await Context.Message.DeleteAsync();
             await Context.Channel.SendMessageAsync(message);
         }
+
+        [Command("cat")]
+        public async Task Cat()
+        {
+            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+
+            System.Random rng = new();
+
+            EmbedBuilder embed = new();
+            embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
+            embed.WithImageUrl("https://thecatapi.com/api/images/get?format=src&type=jpg&size=med");
+
+            await smsg.DeleteAsync();
+            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+        }
     }
 }
