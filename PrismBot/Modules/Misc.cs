@@ -19,6 +19,11 @@ namespace PrismBot.Modules
             embed.AddField("p?chadlevel {user}", "Returns chad level of {user}. If {user} is empty, returns chad level of message author.");
             embed.AddField("p?hornylist", "Returns the top 10 horniest people in the server.");
             embed.AddField("p?chadlist", "Returns the top 10 chaddest people in the server.");
+            embed.AddField("p?kitty", "Returns a random image from r/cats");
+            embed.AddField("p?meme", "Returns a random meme from Reddit.");
+            embed.AddField("p?greentext", "Returns a random 4chan greentext from...Reddit. I'm too lazy to make a 4chan web scraper.");
+            embed.AddField("p?nsfw", "Returns a random NSFW image from Reddit. This command can only be used in an NSFW channel.");
+            embed.AddField("p?hentai", "Returns a random hentai image from Reddit. This command can only be used in an NSFW channel.");
 
             await smsg.DeleteAsync();
             await Context.Channel.SendMessageAsync(null, false, embed.Build());
@@ -34,21 +39,6 @@ namespace PrismBot.Modules
             }
             await Context.Message.DeleteAsync();
             await Context.Channel.SendMessageAsync(message);
-        }
-
-        [Command("cat")]
-        public async Task Cat()
-        {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
-
-            System.Random rng = new();
-
-            EmbedBuilder embed = new();
-            embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
-            embed.WithImageUrl("https://thecatapi.com/api/images/get?format=src&type=jpg&size=med");
-
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
         }
     }
 }
