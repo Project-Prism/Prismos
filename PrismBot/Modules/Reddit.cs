@@ -16,7 +16,7 @@ namespace PrismBot.Modules
     public class Reddit : ModuleBase<SocketCommandContext>
     {
         private string[] meme_subreddits = new string[] { "memes", "dankmemes" };
-        private string[] nsfw_subreddits = new string[] { "nsfw", "toocuteforporn", "tipofmypenis", "pornID" };
+        private string[] nsfw_subreddits = new string[] { "nsfw", "toocuteforporn" };
 
         [Command("kitty")]
         public async Task Kitty()
