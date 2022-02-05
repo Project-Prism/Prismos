@@ -16,7 +16,7 @@ namespace PrismBot.Modules
 
             System.Random rng = new();
 
-            int scale = rng.Next(1, 10);
+            int scale = rng.Next(0, 10);
             int remainder = 10 - scale;
             string bar = string.Empty;
             bar += new string('█', scale * 2);
@@ -39,8 +39,7 @@ namespace PrismBot.Modules
             if (user == null) user = Context.User.Mention;
 
             System.Random rng = new();
-
-            int scale = rng.Next(1, 10);
+            int scale = rng.Next(0, 10);
             int remainder = 10 - scale;
             string bar = string.Empty;
             bar += new string('█', scale * 2);
