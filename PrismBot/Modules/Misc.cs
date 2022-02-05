@@ -16,6 +16,7 @@ namespace PrismBot.Modules
             miscembed.WithTitle("Misc Commands");
             miscembed.AddField("p?say", "Make the bot say something.");
             miscembed.AddField("p?kitty", "Returns a random image from r/cats.");
+            miscembed.AddField("p?reddit {subreddit}", "Grabs a random Reddit post from a specified subreddit");
 
             EmbedBuilder funembed = new();
             funembed.WithColor(Color.Green);

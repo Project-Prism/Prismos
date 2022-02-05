@@ -18,6 +18,26 @@ namespace PrismBot.Modules
         private string[] meme_subreddits = new string[] { "memes", "dankmemes" };
         private string[] nsfw_subreddits = new string[] { "nsfw", "toocuteforporn" };
 
+        [Command("reddit")]
+        public async Task Reddit_(string subreddit)
+        {
+            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+
+            System.Random rng = new();
+            RedditPost[] posts = await Scraper.GetImages(subreddit);
+            RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
+
+            EmbedBuilder embed = new();
+            embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
+            embed.WithUrl(selected.RedditUrl);
+            embed.WithTitle(selected.Title);
+            embed.WithDescription(selected.SelfText);
+            embed.WithImageUrl(selected.Url);
+
+            await smsg.DeleteAsync();
+            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+        }
+
         [Command("kitty")]
         public async Task Kitty()
         {
