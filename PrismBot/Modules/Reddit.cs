@@ -11,6 +11,7 @@ namespace PrismBot.Modules
         public string SelfText { get; set; }
         public string Url { get; set; }
         public string RedditUrl { get; set; }
+        public string Author { get; set; }
     }
 
     public class Reddit : ModuleBase<SocketCommandContext>
@@ -24,7 +25,7 @@ namespace PrismBot.Modules
             RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetImages(subreddit);
+            RedditPost[] posts = await Scraper.GetAny(subreddit);
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -33,6 +34,7 @@ namespace PrismBot.Modules
             embed.WithTitle(selected.Title);
             embed.WithDescription(selected.SelfText);
             embed.WithImageUrl(selected.Url);
+            embed.WithFooter($"Posted by u/{selected.Author}");
 
             await smsg.DeleteAsync();
             await Context.Channel.SendMessageAsync(null, false, embed.Build());
@@ -133,6 +135,26 @@ namespace PrismBot.Modules
 
     public class Scraper
     {
+        public static async Task<RedditPost[]> GetAny(string subreddit)
+        {
+            HttpClient client = new();
+            HttpResponseMessage response = await client.GetAsync($"https://reddit.com/r/{subreddit}/top/.json?limit=50");
+            string content = await response.Content.ReadAsStringAsync();
+            dynamic json = JsonConvert.DeserializeObject(content);
+            List<RedditPost> results = new();
+            foreach (dynamic c in json.data.children)
+            {
+                RedditPost r = new();
+                r.Title = (string)c.data.title;
+                r.SelfText = (string)c.data.selftext;
+                r.Url = (string)c.data.url;
+                r.RedditUrl = "https://www.reddit.com" + (string)c.data.permalink;
+                r.Author = (string)c.data.author;
+                results.Add(r);
+            }
+            return results.ToArray();
+        }
+
         public static async Task<RedditPost[]> GetImages(string subreddit, bool nsfw = false)
         {
             HttpClient client = new();
@@ -155,8 +177,9 @@ namespace PrismBot.Modules
                 RedditPost r = new();
                 r.Title = (string)c.data.title;
                 r.SelfText = (string)c.data.selftext;
-                r.Url = (string)c.data.url;
+                r.Url = url;
                 r.RedditUrl = "https://www.reddit.com" + (string)c.data.permalink;
+                r.Author = (string)c.data.author;
                 results.Add(r);
             }
             return results.ToArray();
