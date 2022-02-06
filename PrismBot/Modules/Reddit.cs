@@ -20,7 +20,7 @@ namespace PrismBot.Modules
         private string[] meme_subreddits = new string[] { "memes", "dankmemes" };
         private string[] nsfw_subreddits = new string[] { "nsfw", "toocuteforporn" };
 
-        [SlashCommand("reddit", "Get Reddit post")]
+        [SlashCommand("reddit", "Get a Reddit post.")]
         public async Task Reddit_(string subreddit)
         {
             await Context.Interaction.DeferAsync();
@@ -40,7 +40,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [SlashCommand("kitty", "Get kitty picture")]
+        [SlashCommand("kitty", "Get a picture of a cat.")]
         public async Task Kitty()
         {
             await Context.Interaction.DeferAsync();
@@ -57,7 +57,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [SlashCommand("meme", "Get a cool meme")]
+        [SlashCommand("meme", "Get a cool meme.")]
         public async Task Meme()
         {
             await Context.Interaction.DeferAsync();
@@ -75,7 +75,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [SlashCommand("greentext", "Get a 4chan greentext")]
+        [SlashCommand("greentext", "Get a 4chan greentext.")]
         public async Task Greentext()
         {
             await Context.Interaction.DeferAsync();
@@ -93,11 +93,16 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [RequireNsfw]
         [SlashCommand("nsfw", "Get an NSFW image")]
         public async Task NSFW()
         {
             await Context.Interaction.DeferAsync();
+
+            if (Context.Channel is ITextChannel tc && tc.IsNsfw)
+            {
+                await Context.Interaction.ModifyOriginalResponseAsync(m => m.Content = "You can only use this command in an NSFW channel!");
+                return;
+            }
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetImages(nsfw_subreddits[rng.Next(0, nsfw_subreddits.Length - 1)], true);
@@ -110,11 +115,16 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [RequireNsfw]
-        [SlashCommand("hentai", "Get a hentai image")]
+        [SlashCommand("hentai", "Get a hentai image.")]
         public async Task Hentai()
         {
             await Context.Interaction.DeferAsync();
+
+            if (Context.Channel is ITextChannel tc && tc.IsNsfw)
+            {
+                await Context.Interaction.ModifyOriginalResponseAsync(m => m.Content = "You can only use this command in an NSFW channel!");
+                return;
+            }
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetImages("hentai", true);

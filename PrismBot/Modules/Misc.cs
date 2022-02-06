@@ -7,7 +7,7 @@ namespace PrismBot.Modules
 {
     public class Misc : InteractionModuleBase<SocketInteractionContext<SocketSlashCommand>>
     {
-        [SlashCommand("help", "Help manual")]
+        [SlashCommand("help", "Get bot help manual.")]
         public async Task Help()
         {
             await Context.Interaction.DeferAsync();
@@ -39,7 +39,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embeds = new Embed[] { miscembed.Build(), funembed.Build(), nsfwembed.Build() });
         }
 
-        [SlashCommand("say", "Make the bot say something!")]
+        [SlashCommand("say", "Make the bot say something.")]
         public async Task Say(string message)
         {
             await Context.Interaction.DeferAsync();

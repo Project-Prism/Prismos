@@ -8,7 +8,7 @@ namespace PrismBot.Modules
 {
     public class Fun : InteractionModuleBase<SocketInteractionContext<SocketSlashCommand>>
     {
-        [SlashCommand("joke", "Tells a joke!")]
+        [SlashCommand("joke", "Tells a joke.")]
         public async Task Joke()
         {
             await Context.Interaction.DeferAsync();

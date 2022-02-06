@@ -7,7 +7,7 @@ namespace PrismBot.Modules
 {
     public class Random : InteractionModuleBase<SocketInteractionContext<SocketSlashCommand>>
     {
-        [SlashCommand("hornylevel", "Get hornylevel of user")]
+        [SlashCommand("hornylevel", "Get horny level of user.")]
         public async Task HornyLevel(string? user = null)
         {
             await Context.Interaction.DeferAsync();
@@ -30,7 +30,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => { m.Content = $"{user}'s Horniness Level"; m.Embed = embed.Build(); });
         }
 
-        [SlashCommand("chadlevel", "Get chad level of user")]
+        [SlashCommand("chadlevel", "Get chad level of user.")]
         public async Task ChadLevel(string? user = null)
         {
             await Context.Interaction.DeferAsync();
@@ -52,7 +52,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => { m.Content = $"{user}'s Chadness Level"; m.Embed = embed.Build(); });
         }
 
-        [SlashCommand("hornylist", "Get server horny list")]
+        [SlashCommand("hornylist", "Get server horny list.")]
         public async Task HornyList()
         {
             await Context.Interaction.DeferAsync();
@@ -88,7 +88,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [SlashCommand("chadlist", "Get server chad list")]
+        [SlashCommand("chadlist", "Get server chad list.")]
         public async Task ChadList()
         {
             await Context.Interaction.DeferAsync();
