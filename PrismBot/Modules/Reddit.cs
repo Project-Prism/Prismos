@@ -98,7 +98,7 @@ namespace PrismBot.Modules
         {
             await Context.Interaction.DeferAsync();
 
-            if (Context.Channel is ITextChannel tc && tc.IsNsfw)
+            if (Context.Channel is ITextChannel tc && !tc.IsNsfw)
             {
                 await Context.Interaction.ModifyOriginalResponseAsync(m => m.Content = "You can only use this command in an NSFW channel!");
                 return;
@@ -120,7 +120,7 @@ namespace PrismBot.Modules
         {
             await Context.Interaction.DeferAsync();
 
-            if (Context.Channel is ITextChannel tc && tc.IsNsfw)
+            if (Context.Channel is ITextChannel tc && !tc.IsNsfw)
             {
                 await Context.Interaction.ModifyOriginalResponseAsync(m => m.Content = "You can only use this command in an NSFW channel!");
                 return;
