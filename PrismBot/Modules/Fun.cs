@@ -1,23 +1,24 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.Rest;
+using Discord.WebSocket;
 using Newtonsoft.Json;
 
 namespace PrismBot.Modules
 {
-    public class Fun : ModuleBase<SocketCommandContext>
+    public class Fun : InteractionModuleBase<SocketInteractionContext<SocketSlashCommand>>
     {
-        [Command("joke")]
+        [SlashCommand("joke", "Tells a joke!")]
         public async Task Joke()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             HttpClient client = new();
             HttpResponseMessage response = await client.GetAsync(new Uri("https://karljoke.herokuapp.com/jokes/random"));
             string content = await response.Content.ReadAsStringAsync();
             var output = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
 
-            await smsg.ModifyAsync((MessageProperties m) => { m.Content = $"{output["setup"]}\n\n{output["punchline"]}"; });
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Content = $"{output["setup"]}\n\n{output["punchline"]}");
 
             response.Dispose();
             client.Dispose();

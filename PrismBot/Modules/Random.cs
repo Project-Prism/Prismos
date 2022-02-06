@@ -1,16 +1,16 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.Rest;
 using Discord.WebSocket;
 
 namespace PrismBot.Modules
 {
-    public class Random : ModuleBase<SocketCommandContext>
+    public class Random : InteractionModuleBase<SocketInteractionContext<SocketSlashCommand>>
     {
-        [Command("hornylevel")]
+        [SlashCommand("hornylevel", "Get hornylevel of user")]
         public async Task HornyLevel(string? user = null)
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             if (user == null) user = Context.User.Mention;
 
@@ -27,14 +27,13 @@ namespace PrismBot.Modules
             embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
             embed.WithDescription(bar);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync($"{user}'s Horniness Level", false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => { m.Content = $"{user}'s Horniness Level"; m.Embed = embed.Build(); });
         }
 
-        [Command("chadlevel")]
+        [SlashCommand("chadlevel", "Get chad level of user")]
         public async Task ChadLevel(string? user = null)
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             if (user == null) user = Context.User.Mention;
 
@@ -50,14 +49,13 @@ namespace PrismBot.Modules
             embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
             embed.WithDescription(bar);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync($"{user}'s Chadness Level", false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => { m.Content = $"{user}'s Chadness Level"; m.Embed = embed.Build(); });
         }
 
-        [Command("hornylist")]
+        [SlashCommand("hornylist", "Get server horny list")]
         public async Task HornyList()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             await Context.Guild.DownloadUsersAsync();
@@ -87,14 +85,13 @@ namespace PrismBot.Modules
             embed.WithFooter("As decided by the Horny Council");
             embed.WithDescription(list);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [Command("chadlist")]
+        [SlashCommand("chadlist", "Get server chad list")]
         public async Task ChadList()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             await Context.Guild.DownloadUsersAsync();
@@ -124,8 +121,7 @@ namespace PrismBot.Modules
             embed.WithFooter("As decided by the Chad Council");
             embed.WithDescription(list);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
     }
 }

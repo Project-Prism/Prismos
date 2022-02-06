@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using PrismBot.Services;
@@ -9,6 +10,7 @@ namespace PrismBot
     class Program
     {
         private static DiscordSocketClient client { get; set; }
+        private static InteractionService iservice { get; set; }
 
         static void Main(string[] args) => MainAsync().GetAwaiter().GetResult();
 
@@ -16,20 +18,31 @@ namespace PrismBot
         {
             using ServiceProvider services = new ServiceCollection()
                 .AddSingleton(x => new DiscordSocketClient(new DiscordSocketConfig() { GatewayIntents = GatewayIntents.All, AlwaysDownloadUsers = true }))
-                .AddSingleton<CommandService>()
-                .AddSingleton<CommandHandlerService>()
+                .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+                .AddSingleton<CommandHandlingService>()
                 .BuildServiceProvider();
 
             client = services.GetRequiredService<DiscordSocketClient>();
             client.Log += Logger;
 
-            await client.SetStatusAsync(UserStatus.DoNotDisturb);
-            await client.SetGameAsync("p?help");
+            iservice = services.GetRequiredService<InteractionService>();
+            iservice.Log += Logger;
 
-            await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
+            client.JoinedGuild += JoinedGuild;
+            client.Ready += async () =>
+            {
+                foreach (SocketGuild guild in client.Guilds)
+                {
+                    await iservice.RegisterCommandsToGuildAsync(guild.Id, true);
+                }
+            };
+
+            await client.SetStatusAsync(UserStatus.Idle);
+
+            await client.LoginAsync(TokenType.Bot, "OTM5NDg5NjE5MDE4NDAzODYw.Yf5l5A.7k7Mxk9B5KainxTxvXxJgZ1OmUY");
             await client.StartAsync();
 
-            await services.GetRequiredService<CommandHandlerService>().InitializeAsync();
+            await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
             await Task.Delay(Timeout.Infinite);
         }
 
@@ -37,6 +50,11 @@ namespace PrismBot
         {
             Console.WriteLine(log.ToString());
             return Task.CompletedTask;
+        }
+
+        private static async Task JoinedGuild(SocketGuild guild)
+        {
+            await iservice.RegisterCommandsToGuildAsync(guild.Id, true);
         }
     }
 }

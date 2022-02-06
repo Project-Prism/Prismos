@@ -1,5 +1,6 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.Interactions;
+using Discord.WebSocket;
 using Discord.Rest;
 using Newtonsoft.Json;
 
@@ -14,15 +15,15 @@ namespace PrismBot.Modules
         public string Author { get; set; }
     }
 
-    public class Reddit : ModuleBase<SocketCommandContext>
+    public class Reddit : InteractionModuleBase<SocketInteractionContext<SocketSlashCommand>>
     {
         private string[] meme_subreddits = new string[] { "memes", "dankmemes" };
         private string[] nsfw_subreddits = new string[] { "nsfw", "toocuteforporn" };
 
-        [Command("reddit")]
+        [SlashCommand("reddit", "Get Reddit post")]
         public async Task Reddit_(string subreddit)
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetAny(subreddit);
@@ -36,14 +37,13 @@ namespace PrismBot.Modules
             embed.WithImageUrl(selected.Url);
             embed.WithFooter($"Posted by u/{selected.Author}");
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [Command("kitty")]
+        [SlashCommand("kitty", "Get kitty picture")]
         public async Task Kitty()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetImages("cats");
@@ -54,14 +54,13 @@ namespace PrismBot.Modules
             embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
             embed.WithImageUrl(selected.Url);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [Command("meme")]
+        [SlashCommand("meme", "Get a cool meme")]
         public async Task Meme()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetImages(meme_subreddits[rng.Next(0, meme_subreddits.Length - 1)]);
@@ -73,14 +72,13 @@ namespace PrismBot.Modules
             embed.WithTitle(selected.Title);
             embed.WithImageUrl(selected.Url);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [Command("greentext")]
+        [SlashCommand("greentext", "Get a 4chan greentext")]
         public async Task Greentext()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetImages("greentext");
@@ -92,15 +90,14 @@ namespace PrismBot.Modules
             embed.WithTitle(selected.Title);
             embed.WithImageUrl(selected.Url);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
         [RequireNsfw]
-        [Command("nsfw")]
+        [SlashCommand("nsfw", "Get an NSFW image")]
         public async Task NSFW()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetImages(nsfw_subreddits[rng.Next(0, nsfw_subreddits.Length - 1)], true);
@@ -110,15 +107,14 @@ namespace PrismBot.Modules
             embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
             embed.WithImageUrl(selected.Url);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
         [RequireNsfw]
-        [Command("hentai")]
+        [SlashCommand("hentai", "Get a hentai image")]
         public async Task Hentai()
         {
-            RestUserMessage smsg = await Context.Channel.SendMessageAsync("Loading...");
+            await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
             RedditPost[] posts = await Scraper.GetImages("hentai", true);
@@ -128,8 +124,7 @@ namespace PrismBot.Modules
             embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
             embed.WithImageUrl(selected.Url);
 
-            await smsg.DeleteAsync();
-            await Context.Channel.SendMessageAsync(null, false, embed.Build());
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
     }
 
