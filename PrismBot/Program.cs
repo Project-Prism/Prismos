@@ -39,7 +39,7 @@ namespace PrismBot
 
             await client.SetStatusAsync(UserStatus.Idle);
 
-            await client.LoginAsync(TokenType.Bot, "OTM5NDg5NjE5MDE4NDAzODYw.Yf5l5A.7k7Mxk9B5KainxTxvXxJgZ1OmUY");
+            await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
             await client.StartAsync();
 
             await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
