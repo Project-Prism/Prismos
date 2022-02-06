@@ -17,7 +17,7 @@ namespace PrismBot
         public static async Task MainAsync()
         {
             using ServiceProvider services = new ServiceCollection()
-                .AddSingleton(x => new DiscordSocketClient(new DiscordSocketConfig() { GatewayIntents = GatewayIntents.All, AlwaysDownloadUsers = true }))
+                .AddSingleton(x => new DiscordSocketClient(new DiscordSocketConfig() { GatewayIntents = GatewayIntents.GuildMembers | GatewayIntents.GuildPresences | GatewayIntents.AllUnprivileged, AlwaysDownloadUsers = true }))
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<CommandHandlingService>()
                 .BuildServiceProvider();
@@ -39,7 +39,7 @@ namespace PrismBot
 
             await client.SetStatusAsync(UserStatus.Idle);
 
-            await client.LoginAsync(TokenType.Bot, "OTM5NDMwNDYzOTUxNDk5Mjg0.Yf4uzA.Rmqb5sbTWf5VZy9HsYLrdWrrEz8");
+            await client.LoginAsync(TokenType.Bot, "OTM5NDg5NjE5MDE4NDAzODYw.Yf5l5A.7k7Mxk9B5KainxTxvXxJgZ1OmUY");
             await client.StartAsync();
 
             await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
