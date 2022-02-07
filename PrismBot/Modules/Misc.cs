@@ -34,6 +34,7 @@ namespace PrismBot.Modules
 
             EmbedBuilder modembed = new();
             modembed.WithColor(Color.Orange);
+            modembed.WithTitle("Moderation Commands");
             modembed.AddField("/kick {user}", "Kicks user.");
             modembed.AddField("/ban {user}", "Bans user.");
 
