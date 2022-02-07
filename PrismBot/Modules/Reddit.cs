@@ -3,20 +3,14 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Discord.Rest;
 using Newtonsoft.Json;
+using PrismBot.Services;
 
 namespace PrismBot.Modules
-{
-    public struct RedditPost
-    {
-        public string Title { get; set; }
-        public string SelfText { get; set; }
-        public string Url { get; set; }
-        public string RedditUrl { get; set; }
-        public string Author { get; set; }
-    }
-
+{ 
     public class Reddit : InteractionModuleBase<SocketInteractionContext<SocketSlashCommand>>
     {
+        public RedditService? rService { get; set; }
+
         private string[] meme_subreddits = new string[] { "memes", "dankmemes" };
         private string[] nsfw_subreddits = new string[] { "nsfw", "toocuteforporn" };
 
@@ -26,7 +20,7 @@ namespace PrismBot.Modules
             await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetAny(subreddit);
+            RedditPost[] posts = await rService.GetAny(subreddit);
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -46,7 +40,7 @@ namespace PrismBot.Modules
             await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetImages("cats");
+            RedditPost[] posts = await rService.GetImages("cats");
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -63,7 +57,7 @@ namespace PrismBot.Modules
             await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetImages(meme_subreddits[rng.Next(0, meme_subreddits.Length - 1)]);
+            RedditPost[] posts = await rService.GetImages(meme_subreddits[rng.Next(0, meme_subreddits.Length - 1)]);
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -81,7 +75,7 @@ namespace PrismBot.Modules
             await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetImages("greentext");
+            RedditPost[] posts = await rService.GetImages("greentext");
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -99,7 +93,7 @@ namespace PrismBot.Modules
             await Context.Interaction.DeferAsync();
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetAny("copypasta");
+            RedditPost[] posts = await rService.GetAny("copypasta");
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -123,7 +117,7 @@ namespace PrismBot.Modules
             }
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetImages(nsfw_subreddits[rng.Next(0, nsfw_subreddits.Length - 1)], true);
+            RedditPost[] posts = await rService.GetImages(nsfw_subreddits[rng.Next(0, nsfw_subreddits.Length - 1)], true);
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -145,7 +139,7 @@ namespace PrismBot.Modules
             }
 
             System.Random rng = new();
-            RedditPost[] posts = await Scraper.GetImages("hentai", true);
+            RedditPost[] posts = await rService.GetImages("hentai", true);
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
@@ -153,59 +147,6 @@ namespace PrismBot.Modules
             embed.WithImageUrl(selected.Url);
 
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
-        }
-    }
-
-    public class Scraper
-    {
-        public static async Task<RedditPost[]> GetAny(string subreddit)
-        {
-            HttpClient client = new();
-            HttpResponseMessage response = await client.GetAsync($"https://reddit.com/r/{subreddit}/top/.json?limit=50");
-            string content = await response.Content.ReadAsStringAsync();
-            dynamic json = JsonConvert.DeserializeObject(content);
-            List<RedditPost> results = new();
-            foreach (dynamic c in json.data.children)
-            {
-                RedditPost r = new();
-                r.Title = (string)c.data.title;
-                r.SelfText = (string)c.data.selftext;
-                r.Url = (string)c.data.url;
-                r.RedditUrl = "https://www.reddit.com" + (string)c.data.permalink;
-                r.Author = (string)c.data.author;
-                results.Add(r);
-            }
-            return results.ToArray();
-        }
-
-        public static async Task<RedditPost[]> GetImages(string subreddit, bool nsfw = false)
-        {
-            HttpClient client = new();
-            HttpResponseMessage response = await client.GetAsync($"https://reddit.com/r/{subreddit}/top/.json?limit=50");
-            string content = await response.Content.ReadAsStringAsync();
-            dynamic json = JsonConvert.DeserializeObject(content);
-            List<RedditPost> results = new();
-            foreach (dynamic c in json.data.children)
-            {
-                if ((bool)c.data.is_video)
-                    continue;
-
-                if ((bool)c.data.over_18 && !nsfw)
-                    continue;
-
-                string url = c.data.url;
-                if (!url.Contains("jpg") && !url.Contains("png") && !url.Contains("jpeg") && !url.Contains("webp"))
-                    continue;
-
-                RedditPost r = new();
-                r.Title = (string)c.data.title;
-                r.SelfText = (string)c.data.selftext;
-                r.Url = url;
-                r.RedditUrl = "https://www.reddit.com" + (string)c.data.permalink;
-                r.Author = (string)c.data.author;
-                results.Add(r);
-            }
-            return results.ToArray();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,8 +8,8 @@ namespace PrismBot
 {
     class Program
     {
-        private static DiscordSocketClient client { get; set; }
-        private static InteractionService iservice { get; set; }
+        private static DiscordSocketClient? client { get; set; }
+        private static InteractionService? iservice { get; set; }
 
         static void Main(string[] args) => MainAsync().GetAwaiter().GetResult();
 
@@ -20,6 +19,7 @@ namespace PrismBot
                 .AddSingleton(x => new DiscordSocketClient(new DiscordSocketConfig() { GatewayIntents = GatewayIntents.GuildMembers | GatewayIntents.GuildPresences | GatewayIntents.AllUnprivileged, AlwaysDownloadUsers = true }))
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<CommandHandlingService>()
+                .AddSingleton<RedditService>()
                 .BuildServiceProvider();
 
             client = services.GetRequiredService<DiscordSocketClient>();
