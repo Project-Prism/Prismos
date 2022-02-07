@@ -24,6 +24,7 @@ namespace PrismBot.Modules
             funembed.WithTitle("Fun Commands");
             funembed.AddField("/joke", "Returns random joke.");
             funembed.AddField("/meme", "Returns a random meme.");
+            funembed.AddField("/copypasta", "Returns a random copypasta.");
             funembed.AddField("/greentext", "Returns a random 4chan greentext from...Reddit. I'm too lazy to make a 4chan web scraper.");
             funembed.AddField("/hornylevel {user}", "Returns horny level of {user}. If {user} is empty, returns horny level of message author.");
             funembed.AddField("/chadlevel {user}", "Returns chad level of {user}. If {user} is empty, returns chad level of message author.");

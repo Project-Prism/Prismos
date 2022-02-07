@@ -93,6 +93,24 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
+        [SlashCommand("copypasta", "Get a copypasta.")]
+        public async Task Copypasta()
+        {
+            await Context.Interaction.DeferAsync();
+
+            System.Random rng = new();
+            RedditPost[] posts = await Scraper.GetAny("copypasta");
+            RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
+
+            EmbedBuilder embed = new();
+            embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
+            embed.WithUrl(selected.RedditUrl);
+            embed.WithTitle(selected.Title);
+            embed.WithDescription(selected.SelfText);
+
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
+        }
+
         [SlashCommand("nsfw", "Get an NSFW image")]
         public async Task NSFW()
         {
