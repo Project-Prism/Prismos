@@ -43,7 +43,7 @@ namespace PrismBot.Modules
             nsfwembed.AddField("/nsfw", "Returns a random NSFW image. This command can only be used in an NSFW channel.");
             nsfwembed.AddField("/hentai", "Returns a random hentai image. This command can only be used in an NSFW channel.");
 
-            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embeds = new Embed[] { miscembed.Build(), funembed.Build(), nsfwembed.Build() });
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embeds = new Embed[] { miscembed.Build(), funembed.Build(), modembed.Build(), nsfwembed.Build() });
         }
 
         [SlashCommand("say", "Make the bot say something.")]
