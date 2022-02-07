@@ -16,6 +16,7 @@ namespace PrismBot.Modules
             miscembed.WithColor(Color.Blue);
             miscembed.WithTitle("Misc Commands");
             miscembed.AddField("/say", "Make the bot say something.");
+            miscembed.AddField("/avatar {user}", "Returns user's avatar.");
             miscembed.AddField("/kitty", "Returns a random image of a cat.");
             miscembed.AddField("/reddit {subreddit}", "Grabs a random Reddit post from a specified subreddit");
 
@@ -30,6 +31,11 @@ namespace PrismBot.Modules
             funembed.AddField("/chadlevel {user}", "Returns chad level of {user}. If {user} is empty, returns chad level of message author.");
             funembed.AddField("/hornylist", "Returns the top 10 horniest people in the server.");
             funembed.AddField("/chadlist", "Returns the top 10 chaddest people in the server.");
+
+            EmbedBuilder modembed = new();
+            modembed.WithColor(Color.Orange);
+            modembed.AddField("/kick {user}", "Kicks user.");
+            modembed.AddField("/ban {user}", "Bans user.");
 
             EmbedBuilder nsfwembed = new();
             nsfwembed.WithColor(Color.DarkRed);
@@ -52,6 +58,33 @@ namespace PrismBot.Modules
             }
 
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Content = message);
+        }
+
+        [SlashCommand("avatar", "Get user's avatar.")]
+        public async Task Avatar(string? user = null)
+        {
+            await Context.Interaction.DeferAsync();
+
+            SocketUser user_;
+            if (user == null) user_ = Context.User;
+            else if (user[0] == '<' && user[user.Length - 1] == '>')
+            {
+                await Context.Guild.DownloadUsersAsync();
+                user_ = Context.Guild.GetUser(ulong.Parse(user.Trim('<', '>').Remove(0, 2)));
+            }
+            else
+            {
+                await Context.Guild.DownloadUsersAsync();
+                user_ = Context.Guild.GetUser(ulong.Parse(user));
+            }
+
+            System.Random rng = new();
+
+            EmbedBuilder embed = new();
+            embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
+            embed.WithImageUrl(user_.GetAvatarUrl(ImageFormat.Auto, 640));
+
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
     }
 }
