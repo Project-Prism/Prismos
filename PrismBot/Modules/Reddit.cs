@@ -51,6 +51,23 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
+        [SlashCommand("cute", "Get a random cute image.")]
+        public async Task Cute()
+        {
+            await Context.Interaction.DeferAsync();
+
+            System.Random rng = new();
+            RedditPost[] posts = await rService.GetImages("cute");
+            RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
+
+            EmbedBuilder embed = new();
+            embed.WithUrl(selected.RedditUrl);
+            embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
+            embed.WithImageUrl(selected.Url);
+
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
+        }
+
         [SlashCommand("meme", "Get a cool meme.")]
         public async Task Meme()
         {
