@@ -30,6 +30,7 @@ namespace PrismBot.Modules
             funembed.AddField("/joke", "Returns random joke.");
             funembed.AddField("/reddit {subreddit}", "Grabs a random Reddit post from a specified subreddit");
             funembed.AddField("/meme", "Returns a random meme.");
+            funembed.AddField("/wholesome", "Returns a random wholesome meme.");
             funembed.AddField("/kitty", "Returns a random image of a cat.");
             funembed.AddField("/cute", "Returns a random cute image.");
             funembed.AddField("/copypasta", "Returns a random copypasta.");

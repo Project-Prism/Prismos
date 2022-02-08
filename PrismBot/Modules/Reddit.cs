@@ -51,7 +51,7 @@ namespace PrismBot.Modules
             await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
         }
 
-        [SlashCommand("cute", "Get a random cute image.")]
+        [SlashCommand("cute", "Get a cute image.")]
         public async Task Cute()
         {
             await Context.Interaction.DeferAsync();
@@ -75,6 +75,24 @@ namespace PrismBot.Modules
 
             System.Random rng = new();
             RedditPost[] posts = await rService.GetImages(meme_subreddits[rng.Next(0, meme_subreddits.Length - 1)]);
+            RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
+
+            EmbedBuilder embed = new();
+            embed.WithColor(rng.Next(0, 255), rng.Next(0, 255), rng.Next(0, 255));
+            embed.WithUrl(selected.RedditUrl);
+            embed.WithTitle(selected.Title);
+            embed.WithImageUrl(selected.Url);
+
+            await Context.Interaction.ModifyOriginalResponseAsync(m => m.Embed = embed.Build());
+        }
+
+        [SlashCommand("wholesome", "Get a wholesome meme.")]
+        public async Task Wholesome()
+        {
+            await Context.Interaction.DeferAsync();
+
+            System.Random rng = new();
+            RedditPost[] posts = await rService.GetImages("wholesomememes");
             RedditPost selected = posts[rng.Next(0, posts.Length - 1)];
 
             EmbedBuilder embed = new();
