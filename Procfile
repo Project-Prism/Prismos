@@ -1,1 +1,1 @@
-worker: cd $HOME/heroku_output && ./PrismBot
+worker: cd $HOME/heroku_output && ./Prismos
