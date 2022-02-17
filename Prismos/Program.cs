@@ -35,7 +35,6 @@ namespace Prismos
                 {
                     await iservice.RegisterCommandsToGuildAsync(guild.Id, true);
                 }
-                await iservice.RegisterCommandsGloballyAsync();
             };
 
             await client.SetStatusAsync(UserStatus.Idle);
