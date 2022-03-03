@@ -3,11 +3,14 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Prismos.Services;
+using Prismos.Objects;
+using Discord.Rest;
 
 namespace Prismos
 {
     class Program
     {
+        public static List<FightInstance> fights = new List<FightInstance>();
         private static DiscordSocketClient? client { get; set; }
         private static InteractionService? iservice { get; set; }
 
@@ -24,22 +27,30 @@ namespace Prismos
 
             client = services.GetRequiredService<DiscordSocketClient>();
             client.Log += Logger;
+            client.ButtonExecuted += ButtonExecuted;
 
             iservice = services.GetRequiredService<InteractionService>();
             iservice.Log += Logger;
 
-            client.JoinedGuild += JoinedGuild;
             client.Ready += async () =>
             {
+#if DEBUG
                 foreach (SocketGuild guild in client.Guilds)
                 {
                     await iservice.RegisterCommandsToGuildAsync(guild.Id, true);
                 }
+#else
+                await iservice.RegisterCommandsGloballyAsync();
+#endif
             };
 
             await client.SetStatusAsync(UserStatus.Idle);
 
+#if DEBUG
+            await client.LoginAsync(TokenType.Bot, "OTM5NDg5NjE5MDE4NDAzODYw.Yf5l5A.7k7Mxk9B5KainxTxvXxJgZ1OmUY");
+#else
             await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
+#endif
             await client.StartAsync();
 
             await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
@@ -52,9 +63,18 @@ namespace Prismos
             return Task.CompletedTask;
         }
 
-        private static async Task JoinedGuild(SocketGuild guild)
+        private static async Task ButtonExecuted(SocketMessageComponent comp)
         {
-            await iservice.RegisterCommandsToGuildAsync(guild.Id, true);
+            await comp.DeferAsync();
+            foreach (var f in fights)
+            {
+                RestInteractionMessage orgresp = await f.Interaction.GetOriginalResponseAsync();
+                if (orgresp.Id == comp.Message.Id)
+                {
+                    await f.DoAction(comp);
+                    break;
+                }
+            }
         }
     }
 }

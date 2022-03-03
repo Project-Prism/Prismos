@@ -2,6 +2,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Newtonsoft.Json;
+using Prismos.Objects;
 
 namespace Prismos.Modules
 {
@@ -21,6 +22,33 @@ namespace Prismos.Modules
 
             response.Dispose();
             client.Dispose();
+        }
+
+        [SlashCommand("fight", "Fight someone.")]
+        public async Task Fight(string user)
+        {
+            await Context.Interaction.DeferAsync();
+
+            SocketGuildUser user_;
+            if (user[0] == '<' && user[user.Length - 1] == '>')
+            {
+                await Context.Guild.DownloadUsersAsync();
+                user_ = Context.Guild.GetUser(ulong.Parse(user.Trim('<', '>').Remove(0, 2)));
+            }
+            else
+            {
+                await Context.Guild.DownloadUsersAsync();
+                user_ = Context.Guild.GetUser(ulong.Parse(user));
+            }
+
+            FightInstance f = new();
+            f.Users = new SocketGuildUser[] { Context.Guild.GetUser(Context.User.Id), user_ };
+            f.Interaction = Context.Interaction;
+            f.Health = new int[] { 100, 100 };
+            f.Defense = new int[] { 0, 0 };
+
+            Program.fights.Add(f);
+            await f.UpdateMessage();
         }
     }
 }
