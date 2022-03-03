@@ -42,7 +42,7 @@ namespace Prismos.Modules
             }
 
             FightInstance f = new();
-            f.Users = new SocketGuildUser[] { Context.Guild.GetUser(Context.User.Id), user_ };
+            f.Users = new SocketGuildUser[] { user_, Context.Guild.GetUser(Context.User.Id) };
             f.Interaction = Context.Interaction;
             f.Health = new int[] { 100, 100 };
             f.Defense = new int[] { 0, 0 };
