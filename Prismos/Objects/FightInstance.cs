@@ -128,6 +128,7 @@ namespace Prismos.Objects
         {
             string healthstring = health.ToString();
             if (healthstring.Length > 1) healthstring = healthstring.Remove(healthstring.Length - 1, 1);
+            else healthstring = "1";
             int pnum = int.Parse(healthstring);
 
             string output = string.Empty;
@@ -143,6 +144,7 @@ namespace Prismos.Objects
         {
             string defstring = def.ToString();
             if (defstring.Length > 1) defstring = defstring.Remove(defstring.Length - 1, 1);
+            else defstring = "1";
             int pnum = int.Parse(defstring);
 
             string output = string.Empty;
