@@ -10,7 +10,7 @@ namespace Prismos.Modules
         [SlashCommand("help", "Get bot help manual.")]
         public async Task Help()
         {
-            await Context.Interaction.DeferAsync();
+            await Context.Interaction.DeferAsync(true);
 
             EmbedBuilder miscembed = new();
             miscembed.WithColor(Color.Blue);
@@ -33,6 +33,7 @@ namespace Prismos.Modules
             funembed.AddField("/meme", "Returns a random meme.");
             funembed.AddField("/wholesome", "Returns a random wholesome meme.");
             funembed.AddField("/kitty", "Returns a random image of a cat.");
+            funembed.AddField("/bunny", "Returns a random image of a rabbit.");
             funembed.AddField("/cute", "Returns a random cute image.");
             funembed.AddField("/copypasta", "Returns a random copypasta.");
             funembed.AddField("/greentext", "Returns a random 4chan greentext from...Reddit. I'm too lazy to make a 4chan web scraper.");
