@@ -58,7 +58,7 @@ namespace Prismos.Modules
 
             if (message.Contains("@everyone") || message.Contains("@here"))
             {
-                await RespondAsync("You think you're being smart huh? You can't get me to ping everyone.");
+                await Context.Interaction.ModifyOriginalResponseAsync(m => m.Content = "You think you're being smart huh? You can't get me to ping everyone.");
                 return;
             }
 
