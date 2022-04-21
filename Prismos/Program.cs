@@ -1,10 +1,10 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Prismos.Services;
 using Prismos.Objects;
-using Discord.Rest;
 
 namespace Prismos
 {
@@ -47,7 +47,7 @@ namespace Prismos
             await client.SetStatusAsync(UserStatus.Idle);
 
 #if DEBUG
-            await client.LoginAsync(TokenType.Bot, "OTM5NDg5NjE5MDE4NDAzODYw.Yf5l5A.7k7Mxk9B5KainxTxvXxJgZ1OmUY");
+            await client.LoginAsync(TokenType.Bot, "");
 #else
             await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
 #endif
